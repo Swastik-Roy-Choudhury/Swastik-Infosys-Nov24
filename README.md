@@ -2,7 +2,7 @@
 
 ### **Email Id** - swastikroychoudhury014@gmail.com
 
-### **GitHub Repository** - https://github.com/Swastik-Roy-Choudhury/FutureCart-Infosys-Nov24
+### **GitHub Repository** - https://github.com/Swastik-Roy-Choudhury/Swastik-Infosys-Nov24
 
 
 # **Title**
