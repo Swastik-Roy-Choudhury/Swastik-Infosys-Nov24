@@ -45,11 +45,64 @@ In the realm of E-commerce, demand forecasting plays a pivotal role in ensuring 
 
 • Statistical summaries.
 
-# **Insights**
 
-I started by importing the necessary libraries: `google.colab.drive` and `pandas`. I then mounted my Google Drive to access my dataset.
+### 1. Data Loading and Setup
+I started by loading the dataset from an Excel file and converting the 'Day Index' column to a datetime format, setting it as the index. This setup was important for performing time-series analysis.
 
-Next, I loaded the Excel file, "Master_ProductA_dataset.xlsx," into a pandas DataFrame. To get a sense of the data quality, I checked for missing values using `data.isnull().sum()`. This gave me a clear picture of the columns with missing data.
+### 2. Exploratory Data Analysis (EDA)
+
+**2.1 Descriptive Statistics**
+I reviewed descriptive statistics for key columns ('Quantity', 'Impressions', 'Clicks') to understand central tendencies and variability. This step provided an initial sense of the data’s distribution, revealing potential outliers or anomalies.
+
+**2.2 Distribution Analysis**
+I visualized the distributions for 'Quantity', 'Impressions', and 'Clicks' using histograms with KDE plots. Through this, I was able to:
+   - Identify skewness or outliers.
+   - Observe peaks that indicated common value ranges and demand periods.
+   - Note valleys that could reflect rare events or demand gaps.
+
+**2.3 Time Series Analysis**
+I plotted daily trends for 'Quantity', 'Impressions', and 'Clicks' to observe temporal patterns. This analysis:
+   - Highlighted periods of high and low activity.
+   - Allowed me to spot seasonality and regular patterns.
+   - Revealed peaks corresponding to high-demand days and troughs to low-demand days.
+
+**2.4 Weekly and Monthly Rolling Averages**
+I calculated weekly and monthly rolling averages to smooth out daily fluctuations and capture broader trends. The resulting plot helped in identifying:
+   - Consistent short-term trends through weekly averages.
+   - Long-term demand trends via monthly averages, reducing the impact of daily noise.
+
+**2.5 Correlation Analysis**
+Using pairwise scatter plots and a correlation heatmap, I examined relationships between 'Quantity', 'Impressions', and 'Clicks'. This analysis:
+   - Visually identified positive or negative correlations.
+   - Suggested interdependencies and segments in user behavior.
+   - Quantified the strength of relationships, helping inform feature selection for predictive modeling.
+
+**2.6 Conversion Rate Analysis**
+I calculated and plotted the 'Conversion Rate' over time to evaluate the effectiveness of impressions converting into clicks. This analysis:
+   - Showed peaks that highlighted successful campaigns or relevant content.
+   - Revealed valleys, indicating potential misalignment with user interest.
+   - Provided a basis to monitor conversion trends over time for optimization.
+
+### 3. Data Preprocessing
+
+**3.1 Missing Value Check**
+I examined the dataset for missing values to determine if any data imputation or cleanup was needed, ensuring data quality.
+
+**3.2 Date Feature Expansion**
+To enhance temporal analysis, I extracted various date-related features, including 'Day of Week', 'Week', 'Month', 'Quarter', and 'Year'. These additional time dimensions helped in seasonal and weekly demand pattern recognition.
+
+**3.3 Feature Scaling**
+I normalized the 'Quantity', 'Impressions', and 'Clicks' columns using MinMaxScaler to ensure they were on a comparable scale, preparing the data for modeling.
+
+### 4. Feature Engineering
+
+**4.1 Rolling Metrics**
+I calculated weekly and monthly rolling sums for 'Quantity' and average values for 'Impressions' and 'Clicks'. These metrics captured recent trends over different time windows, which could highlight periods of sustained or fluctuating demand.
+
+**4.2 Lag Features**
+To introduce temporal dependencies, I created lagged features for 'Quantity', 'Impressions', and 'Clicks'. This enabled me to analyze the impact of past values on present demand, setting the foundation for predictive modeling.
+
+After completing these steps, I reviewed the data to ensure that all new features were integrated correctly, enhancing the dataset's richness and readiness for further analysis or modeling.
 
 To identify potential outliers, I implemented two methods:
 
@@ -69,8 +122,7 @@ After identifying the outliers, I decided to replace them with the median value 
 
 Finally, I saved the cleaned dataset to a new Excel file, "cleaned_file.xlsx," for further analysis.
 
-
-**Feature Engineering**
+# **Insights**
 
 I started by loading the cleaned dataset into a pandas DataFrame. To gain a better understanding of the data, I printed the first few rows.
 
@@ -78,47 +130,76 @@ I started by loading the cleaned dataset into a pandas DataFrame. To gain a bett
 
 I then embarked on the feature engineering process to extract more insights from the data:
 
-1. **Datetime Conversion and Extraction:**
-   - I converted the 'Day Index' column to a datetime format.
-   - I extracted the day of the week from the 'Day Index' and created a new column 'Day of Week'.
+In this code, I was enhancing my dataset by generating new features to gain deeper insights into user behavior and trends. Here’s a detailed breakdown of each step and why I implemented it:
 
-2. **Interaction Feature:**
-   - I calculated 'Clicks per Impression' by dividing 'Clicks' by 'Impressions' and added it as a new column.
+ **Loading and Initial Exploration**:
+   - I started by loading the dataset from an Excel file into a DataFrame and printed the first few rows. This was crucial for examining the dataset’s initial structure and identifying any required data transformations or additional features that could improve analysis.
 
-3. **Polynomial Feature:**
-   - I created a new column 'Quantity Squared' by squaring the values in the 'Quantity' column.
+ **Date Conversion**:
+   - I converted the 'Day Index' column to datetime format, as I wanted to extract date-related features. This step was essential for enabling any time-based analysis, such as understanding patterns across days of the week or differentiating between weekdays and weekends.
 
-I printed the first few rows of the modified DataFrame to visualize the newly created features. Finally, I saved the enhanced dataset to a new Excel file, "enhanced_file.xlsx".
+ **Time-Based Features**:
+   - I created two features: `Day of Week` and `Is Weekend`. The `Day of Week` helped me capture daily trends, while `Is Weekend` flagged whether a given date was a Saturday or Sunday. This information was helpful for observing any differences in user behavior on weekends versus weekdays, which could impact campaign strategies.
 
-**Loading the Enhanced Dataset**
+ **Interaction Feature (Clicks per Impression)**:
+   - I calculated `Clicks per Impression` to get a ratio of engagement. This feature gave insight into the effectiveness of impressions in generating clicks, helping me evaluate the engagement level more precisely. It served as an essential metric for understanding user interest and gauging performance.
 
-I loaded the enhanced dataset that I had previously created into a pandas DataFrame. To get a quick overview, I printed the first few rows.
+ **Lag Features for Temporal Relationships**:
+   - I added lagged columns (`Prev Day Clicks`, `Prev Day Impressions`, `Prev Day Conversion Rate`) to incorporate information from the previous day. This allowed me to analyze how past behaviors impacted the current day's performance. For example, if clicks spiked one day, I could see if there was any subsequent effect on the following day, which helped in time-series analysis.
 
-## Data Exploration and Visualization
+ **Cumulative Metrics**:
+   - I calculated cumulative metrics for `Quantity`, `Impressions`, and `Clicks`, which added a running total of these values. Cumulative metrics were insightful for understanding overall performance growth over time and helped me track the progress of various metrics continuously.
 
-**Initial Exploration**
+ **Exponential Moving Averages (EMA)**:
+   - I applied a 7-day Exponential Moving Average (EMA) to `Clicks`, `Impressions`, and `Quantity` to smooth out fluctuations in the data, especially for high-frequency variations. Using EMA allowed me to observe long-term trends more effectively by reducing noise, helping me focus on significant patterns without being distracted by daily variations.
 
-1. **Loaded Data:** I started by loading the enhanced dataset, "enhanced_file.xlsx," into a pandas DataFrame for further analysis.
-2. **Previewed Data:** I printed the first few rows to get a glimpse of the data structure.
-3. **Summary Statistics:** I generated basic descriptive statistics for each column to understand data distribution and ranges.
-4. **Missing Values:** I checked for missing values to ensure data completeness.
-5. **Data Distribution Visualization:**
-   - I created histograms for numerical columns to visualize value distribution and identify potential patterns or outliers.
-   - I used boxplots to detect outliers in the numerical columns for further analysis or cleaning.
-6. **Relationships and Correlations:** I generated a pairplot to explore relationships and potential correlations between numerical columns.
+ **High-Engagement Flag**:
+   - I created a `High Engagement` flag based on the 75th percentile thresholds for `Clicks` and `Impressions`. This flag identified days with unusually high engagement. With this feature, I could quickly spot peak activity days, which might correlate with successful campaigns or other significant events.
 
-**Creating Specific Visualizations**
+ **Output and Storage**:
+   - After adding these new features, I printed the enhanced data and saved it to a new Excel file for further analysis or visualization. Saving the file ensured that I had a record of the enriched dataset for future use or sharing.
 
-1. **Time Series Plot:** I converted the 'Day Index' column to datetime format for accurate time-based visualizations.
-   - I then created a line plot to visualize how 'Quantity' changed over time.
+ These additions allowed for better analysis of trends, seasonality, engagement, and cumulative growth, providing a more comprehensive understanding of the dataset’s underlying dynamics.
 
-2. **Scatter Plot:** I created a scatter plot to examine the relationship between 'Clicks' and 'Impressions'.
+ ## Data Exploration and Visualization
+I was conducting a detailed exploratory analysis to visualize and interpret the key patterns within the dataset, focusing on user engagement metrics. Here are the insights and reasoning from each plot and analysis:
 
-3. **Bar Plot - Day of Week:** I investigated average 'Quantity' by day of the week:
-   - I grouped data by 'Day of Week' and calculated the average 'Quantity'.
-   - I created a bar plot with a specific order for days of the week (Monday to Sunday) to  visualize trends.
+###  Line Plot of Quantity, Impressions, and Clicks Over Time
+I was plotting 'Quantity,' 'Impressions,' and 'Clicks' over time to observe their daily trends.
+   - **Insight**: Peaks in 'Impressions' pointed to high engagement periods, often corresponding to marketing campaigns, while 'Quantity' peaks aligned with 'Impressions,' suggesting a positive relationship.
+   - **Reason for Peaks and Valleys**: High points represented strong demand or engagement, and valleys indicated off-peak periods or lower interest.
+   - **Purpose of Plot**: This time-series analysis was crucial for observing general trends, campaign impact, and seasonality in customer behavior.
 
-4. **Histogram:** Finally, I generated a histogram to observe the distribution of 'Quantity' values. I added a kernel density estimation (KDE) for a smoother distribution curve.
+###  Boxplot of Quantity by Day of the Week
+I examined the distribution of 'Quantity' across weekdays to identify day-specific patterns.
+   - **Insight**: Certain days showed higher median values, suggesting peak activity aligned with user behavior patterns.
+   - **Reason for Peaks and Valleys**: Peaks on specific days might correlate with scheduled campaigns or weekly habits.
+   - **Purpose of Plot**: This analysis helped pinpoint the best days for user engagement and could inform scheduling strategies.
 
+###  Histogram of Clicks per Impression
+I analyzed the distribution of 'Clicks per Impression' to understand engagement quality.
+   - **Insight**: The histogram showed the most common engagement rates, with the distribution shape indicating typical user interaction patterns.
+   - **Reason for Peaks and Valleys**: Peaks in certain bins represented common engagement levels, while valleys indicated extremes.
+   - **Purpose of Plot**: This plot revealed engagement quality and helped guide strategies for optimizing impression effectiveness.
+
+###  Correlation Heatmap Between Numerical Features
+I created a heatmap to visualize the correlations among 'Quantity,' 'Impressions,' and 'Clicks.'
+   - **Insight**: Strong correlations between features highlighted synergistic relationships, informing feature selection for modeling.
+   - **Reason for Peaks and Valleys**: High values represented strong dependencies, while low values indicated weaker relationships.
+   - **Purpose of Plot**: This correlation matrix was essential for understanding interdependencies among features, useful in predictive modeling.
+
+###  Cumulative Plot of Quantity, Impressions, and Clicks Over Time
+I plotted cumulative totals of 'Quantity,' 'Impressions,' and 'Clicks' to examine overall growth trends.
+   - **Insight**: A steady rise indicated continuous growth in user interactions, while peaks showed high-activity periods.
+   - **Reason for Peaks and Valleys**: Peaks signaled accelerated growth phases, while plateaus suggested stabilization or seasonal drops.
+   - **Purpose of Plot**: This cumulative view offered a big-picture perspective on overall engagement trends and growth over time.
+
+###  Pairplot of Quantity, Impressions, and Clicks
+I used a pairplot to explore relationships among 'Quantity,' 'Impressions,' and 'Clicks.'
+   - **Insight**: Linear patterns suggested correlations or causations, while visible outliers indicated unusual data points.
+   - **Reason for Peaks and Valleys**: Clustering in scatter plots indicated strong relationships, while dispersed points suggested weaker links.
+   - **Purpose of Plot**: This plot was useful for identifying feature interrelationships and patterns that might inform further modeling.
+
+This analysis provided a comprehensive understanding of user behavior patterns, feature relationships, and data quality, preparing the data for informed decision-making and future predictive modeling.
    
 
