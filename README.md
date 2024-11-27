@@ -59,6 +59,16 @@ In the realm of E-commerce, demand forecasting plays a pivotal role in ensuring 
 
 • I'm selecting the one that yields the lowest error metric.
 
+# **Milestone 2: Week 4**
+# Module 4 : Model Evaluation
+
+• I am visualizing the model fit by plotting predicted values against actual sales data.
+
+• I am evaluating the model's performance using metrics like MAE, RMSE, and MAPE.
+
+• I am checking residual plots to ensure no systematic errors remain.
+
+
 
 
 
